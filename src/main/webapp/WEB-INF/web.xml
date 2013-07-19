@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+	version="2.5">
+    <display-name>clj-reindeer example</display-name>
+    <context-param>
+        <description>Vaadin production mode</description>
+        <param-name>productionMode</param-name>
+        <param-value>false</param-value>
+    </context-param>
+    <servlet>
+        <servlet-name>clj-reindeer-example</servlet-name>
+        <servlet-class>clj.reindeer.ReindeerServlet</servlet-class>
+    <init-param>
+            <description>Vaadin UI</description>
+            <param-name>UI</param-name>
+            <param-value>clj.reindeer.ReindeerUI</param-value>
+    </init-param>
+    <init-param>
+			<description>function to init vaadin application</description>
+			<param-name>initFn</param-name>
+			<param-value>clj.reindeer.example.rssapplication/init</param-value>
+	</init-param>
+	<init-param>
+			<description>Vaadin theme name</description>
+			<param-name>themeName</param-name>
+			<param-value>reindeer</param-value>
+	</init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>clj-reindeer-example</servlet-name>
+        <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+</web-app>
