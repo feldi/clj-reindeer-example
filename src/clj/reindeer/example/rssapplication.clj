@@ -2,6 +2,10 @@
   (require [clj.reindeer.example.rss :as rss])
   (:use [clj.reindeer.core]))
 
+;; (start-nrepl-server)
+
+(def LATEST_RSS_FEED_URL "latest_rss_feed_url")
+
 (defn- create-container
   [feed-lines]
   (let [container
@@ -41,10 +45,12 @@
 (defn- create-url-field
   []
   (text-field :width "100%"
+              :value (or (get-cookie-value LATEST_RSS_FEED_URL) "") 
               :input-prompt "Feed URL")) ; example: http://jaxenter.de/all-rss.xml
 
 (defn- display-feed
   [url table]
+  (add-cookie (cookie LATEST_RSS_FEED_URL url :path "/cljreindeerexample" :max-age 1000000))
   (config! table :container-datasource (create-container (rss/fetch-feed url))
                  :visible-columns ["Title"])) ; geht durch set-container-datasource verloren!
 
@@ -64,7 +70,7 @@
                            :spacing true
                            :items [
                                    url-field
-                                   example-label
+                                   "Example: http://jaxenter.de/all-rss.xml"
                                    fetch-button
                                    ]) 
         ui-content    (v-l :spacing true
@@ -78,7 +84,7 @@
                                    ])
         ]
     (set-expand-ratio! feed-select url-field 3)	
-    (set-expand-ratio! feed-select example-label 1)	
+    (set-expand-ratio-at-index! feed-select 1 1)	
     ui-content
    ))
 
