@@ -1,15 +1,6 @@
 (ns clj.reindeer.example.rssapplication
-  (import [com.vaadin.ui 
-           Table$ColumnHeaderMode
-           Label]
-;          [com.vaadin.event
-;           ItemClickEvent$ItemClickListener]
-;          [com.vaadin.data.util
-;           IndexedContainer]
-         )
   (require [clj.reindeer.example.rss :as rss])
-  (:use [clj.reindeer.core])
-  )
+  (:use [clj.reindeer.core]))
 
 (defn- create-container
   [feed-lines]
@@ -33,9 +24,9 @@
 
 (defn- create-feed-table
   [content-label link-label]
-  (table :width "100%" :height "50%" 
-         :selectable? true :immediate? true
-         :column-header-mode Table$ColumnHeaderMode/HIDDEN
+  (table :width "100%", :height "50%" 
+         :selectable? true, :immediate? true, :striped? true
+         :column-header-mode column-header-mode-hidden
          :on-item-click (create-item-click-listener content-label link-label)
          :container-datasource (create-container nil)
          :visible-columns ["Title"]))
@@ -43,7 +34,7 @@
  (defn- create-feed-content-label
   []
   (label :value "Please select a feed item in the table above"
-         :content-mode Label/CONTENT_XHTML
+         :content-mode content-mode-html
          :width "100%"
          :height "50%"))
 
@@ -61,6 +52,7 @@
   []
   (let [content-label (create-feed-content-label)
         url-field     (create-url-field)
+        example-label (label "Example: http://jaxenter.de/all-rss.xml") 
         link-label    (link :target-name  "_blank")
         feed-table    (create-feed-table content-label link-label)
         fetch-button  (button :caption "Fetch"
@@ -72,6 +64,7 @@
                            :spacing true
                            :items [
                                    url-field
+                                   example-label
                                    fetch-button
                                    ]) 
         ui-content    (v-l :spacing true
@@ -81,10 +74,11 @@
                                    feed-table
                                    content-label
                                    link-label
-                                   (print-page-button "Diese Seite drucken") 
+                                   (print-page-button "Print this page") 
                                    ])
         ]
-    (set-expand-ratio! feed-select url-field 1)	
+    (set-expand-ratio! feed-select url-field 3)	
+    (set-expand-ratio! feed-select example-label 1)	
     ui-content
    ))
 
