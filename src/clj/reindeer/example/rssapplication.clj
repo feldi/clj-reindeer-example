@@ -26,7 +26,7 @@
   [content-label link-label]
   (table :width "100%", :height "50%" 
          :selectable? true, :immediate? true, :striped? true
-         :column-header-mode column-header-mode-hidden
+         :column-header-mode COLUMN-HEADER-MODE-HIDDEN
          :on-item-click (create-item-click-listener content-label link-label)
          :container-datasource (create-container nil)
          :visible-columns ["Title"]))
@@ -34,7 +34,7 @@
  (defn- create-feed-content-label
   []
   (label :value "Please select a feed item in the table above"
-         :content-mode content-mode-html
+         :content-mode CONTENT-MODE-HTML
          :width "100%"
          :height "50%"))
 
@@ -74,7 +74,7 @@
                                    feed-table
                                    content-label
                                    link-label
-                                   (print-page-button "Print this page") 
+                                   (print-page-button "Print this page") ; just a test
                                    ])
         ]
     (set-expand-ratio! feed-select url-field 3)	
