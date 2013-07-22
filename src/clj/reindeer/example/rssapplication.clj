@@ -83,8 +83,8 @@
                                    (print-page-button "Print this page") ; just a test
                                    ])
         ]
-    (set-expand-ratio! feed-select url-field 3)	
-    (set-expand-ratio-at-index! feed-select 1 1)	
+    (set-expand-ratio! feed-select url-field 3.0)	
+    (set-expand-ratio-at-index! feed-select 1 1.0)	
     ui-content
    ))
 
