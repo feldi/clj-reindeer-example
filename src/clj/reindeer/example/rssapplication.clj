@@ -30,7 +30,7 @@
   [content-label link-label]
   (table :width "100%", :height "50%" 
          :selectable? true, :immediate? true, :striped? true
-         :column-header-mode COLUMN-HEADER-MODE-HIDDEN
+         :column-header-mode :hidden
          :on-item-click (create-item-click-listener content-label link-label)
          :container-datasource (create-container nil)
          :visible-columns ["Title"]))
@@ -38,7 +38,7 @@
  (defn- create-feed-content-label
   []
   (label :value "Please select a feed item in the table above"
-         :content-mode CONTENT-MODE-HTML
+         :content-mode :html
          :width "100%"
          :height "50%"))
 
@@ -50,7 +50,7 @@
 
 (defn- display-feed
   [url table]
-  (add-cookie (cookie LATEST_RSS_FEED_URL url :path "/cljreindeerexample" :max-age 1000000))
+  (set-cookie (cookie LATEST_RSS_FEED_URL url :path "/cljreindeerexample" :max-age 1000000))
   (config! table :container-datasource (create-container (rss/fetch-feed url))
                  :visible-columns ["Title"])) ; geht durch set-container-datasource verloren!
 
