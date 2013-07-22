@@ -1,12 +1,10 @@
 # clj-reindeer-example
 
+A RSS reader implemented in Clojure with Vaadin 7 as a frontend framework.
 
-A RSS reader implemented in Clojure with Vaadin 7 as a frontend framework, using clj-reindeer toolkit.
-
-This is a sample application for my article about Clojure and Vaadin 7 which is published in [Java Magazin 08.2013](https://jaxenter.de/java-magazin-archiv).
+This example is based on Tobias Bayer's [Clojure/Vaadin RSS reader](https://github.com/codebrickie/rsscljvaadin) and uses [clj-reindeer](https://github.com/feldi/clj-reindeer) instead of Clojure's Java interop to access Vaadin functionality.
 
 ![Screenshot](https://github.com/codebrickie/rsscljvaadin/raw/screenshots/screenshot.png?raw=true)
-
 
 ## License
 
