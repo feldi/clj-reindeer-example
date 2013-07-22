@@ -4,27 +4,18 @@
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
-                 [com.vaadin/vaadin-server "7.1.0"]
-                 [com.vaadin/vaadin-client-compiled "7.1.0"]
-                 [com.vaadin/vaadin-themes "7.1.0"]
-                 [clj-reindeer "0.3.1"]
-                 ]
-  :plugins [ [lein-servlet "0.3.0"]
-             [lein-localrepo "0.4.1"]]
-  :servlet {
-            :deps [[lein-servlet/adapter-jetty9 "0.3.0"]]
-            :config {
-                     :engine :jetty
+                 [clj-reindeer "0.3.1"]]
+  :plugins [[lein-servlet "0.3.0"]
+            [lein-localrepo "0.4.1"]]
+  :servlet {:deps [[lein-servlet/adapter-jetty9 "0.3.0"]]
+            :config {:engine :jetty
                      :host "localhost"
-                     :port 3000
-                     }
-            :webapps {
-                      :cljreindeerexample
-                      {
-                       :web-xml "src/main/webapp/WEB-INF/web.xml"
-                       :public "resources"
-                       }
-                      }
-            }
-  :aot [clj.reindeer.example.rssapplicationui]
-  )
+                     :port 3000}
+            :webapps {:cljreindeerexample
+                       {:web-xml "src/main/webapp/WEB-INF/web.xml"
+                        :public "resources"}}}
+  :profiles {:dev
+              {:dependencies
+                [[javax.servlet/javax.servlet-api "3.1.0"]
+                 [midje "1.5.1"]]}}
+  :aot [clj.reindeer.example.rssapplicationui])
