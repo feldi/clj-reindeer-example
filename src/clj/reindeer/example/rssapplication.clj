@@ -1,83 +1,70 @@
 (ns clj.reindeer.example.rssapplication
-  (import [com.vaadin.ui 
-           Table
-           Table$ColumnHeaderMode
-           Label]
-          [com.vaadin.event
-           ItemClickEvent$ItemClickListener]
-          [com.vaadin.data.util
-           IndexedContainer]
-         )
   (require [clj.reindeer.example.rss :as rss])
-  (:use [clj.reindeer.core])
-  )
+  (:use [clj.reindeer.core]))
+
+(defn- create-container
+  [feed-lines]
+  (let [container
+        (indexed-container :properties [(container-property :pid "Title" :type String)
+                                        (container-property :pid "Link" :type String)
+                                        (container-property :pid "Description" :type String) ] ) ]
+    (doseq [feed-line feed-lines]
+      (set-item-property-values (add-container-item container)
+                                {"Title"       (:title feed-line)
+                                 "Link"        (:link feed-line)
+                                 "Description" (:description feed-line)} ))
+    container))
 
 (defn- create-item-click-listener
   [content-label link-label]
-  (reify ItemClickEvent$ItemClickListener
-    (itemClick
-     [_ evt]
-     (config! content-label :value (.getValue (.getItemProperty (.getItem evt) "Description")))
-     (config! link-label :caption  (.getValue (.getItemProperty (.getItem evt) "Link")))
-     (config! link-label :resource (ext-res (.getValue (.getItemProperty (.getItem evt) "Link")))))))
+  (fn [evt] 
+     (config! content-label :value (get-item-property-value (get-item-from-item-click-event evt) "Description"))
+     (config! link-label :caption  (get-item-property-value (get-item-from-item-click-event evt) "Link")
+                         :resource (external-resource (get-item-property-value (get-item-from-item-click-event evt) "Link")))))
 
 (defn- create-feed-table
   [content-label link-label]
-  (doto (Table.)
-    (.setWidth "100%")
-    (.setHeight "50%")
-    (.setSelectable true)
-    (.setImmediate true)
-    (.setColumnHeaderMode Table$ColumnHeaderMode/HIDDEN)
-    (.addItemClickListener (create-item-click-listener content-label link-label))))
+  (table :width "100%", :height "50%" 
+         :selectable? true, :immediate? true, :striped? true
+         :column-header-mode COLUMN-HEADER-MODE-HIDDEN
+         :on-item-click (create-item-click-listener content-label link-label)
+         :container-datasource (create-container nil)
+         :visible-columns ["Title"]))
 
  (defn- create-feed-content-label
   []
   (label :value "Please select a feed item in the table above"
-         :content-mode Label/CONTENT_XHTML
+         :content-mode CONTENT-MODE-HTML
          :width "100%"
          :height "50%"))
 
 (defn- create-url-field
   []
   (text-field :width "100%"
-              :input-prompt "Feed URL" ; example: http://jaxenter.de/all-rss.xml
-  ))
-
-(defn- create-container
-  [items]
-  (let [c (IndexedContainer.)]
-    (.addContainerProperty c "Title" String nil)
-    (.addContainerProperty c "Link" String nil)
-    (.addContainerProperty c "Description" String nil)
-    (doseq [item items]
-      (let [i (.addItem c (Object.))]
-        (.setValue (.getItemProperty i "Title") (:title item))
-        (.setValue (.getItemProperty i "Link") (:link item))
-        (.setValue (.getItemProperty i "Description") (:description item))))
-    c))
+              :input-prompt "Feed URL")) ; example: http://jaxenter.de/all-rss.xml
 
 (defn- display-feed
   [url table]
-  (.setContainerDataSource table (create-container (rss/fetch-feed url))
-    (java.util.ArrayList. ["Title"])))
+  (config! table :container-datasource (create-container (rss/fetch-feed url))
+                 :visible-columns ["Title"])) ; geht durch set-container-datasource verloren!
 
 (defn- create-content
   []
   (let [content-label (create-feed-content-label)
         url-field     (create-url-field)
+        example-label (label "Example: http://jaxenter.de/all-rss.xml") 
         link-label    (link :target-name  "_blank")
         feed-table    (create-feed-table content-label link-label)
         fetch-button  (button :caption "Fetch"
                               :on-click (fn [ev] 
                                           (display-feed 
-                                            (.getValue url-field) 
+                                            (config url-field :value) 
                                             feed-table)))
         feed-select   (h-l :width "100%" 
                            :spacing true
                            :items [
                                    url-field
-                                   ;; "Example: http://jaxenter.de/all-rss.xml" 
+                                   example-label
                                    fetch-button
                                    ]) 
         ui-content    (v-l :spacing true
@@ -87,10 +74,11 @@
                                    feed-table
                                    content-label
                                    link-label
-                                   (print-page-button "Diese Seite drucken") 
+                                   (print-page-button "Print this page") ; just a test
                                    ])
         ]
-    (set-expand-ratio! feed-select url-field 1)	
+    (set-expand-ratio! feed-select url-field 3)	
+    (set-expand-ratio! feed-select example-label 1)	
     ui-content
    ))
 
