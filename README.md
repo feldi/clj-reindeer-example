@@ -6,6 +6,8 @@ This example is based on Tobias Bayer's [Clojure/Vaadin RSS reader](https://gith
 
 ![Screenshot](https://github.com/codebrickie/rsscljvaadin/raw/screenshots/screenshot.png?raw=true)
 
+after lein servlet run, browse to: http://localhost:3000/cljreindeerexample/
+
 ## License
 
 Copyright © 2013 Tobias Bayer, Peter Feldtmann
