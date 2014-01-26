@@ -17,5 +17,6 @@
   :profiles {:dev
               {:dependencies
                 [[javax.servlet/javax.servlet-api "3.1.0"]
-                 [midje "1.5.1"]]}}
+                 [midje "1.5.1"]
+                 [com.vaadin/vaadin-push "7.1.10"]]}}
   :aot [clj.reindeer.example.rssapplicationui])

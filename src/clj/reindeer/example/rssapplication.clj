@@ -92,5 +92,8 @@
    "This is the 'main entry point' to the Vaadin application."
   [main-ui vaadin-request]
   (config-ui! :title "RSS Reader built with Vaadin in Clojure"
-              :content (create-content)))
+              :content (create-content)
+              ;; in push mode the cookies are not functioning - a known Vaadin defect... 
+              ;;:push-mode :automatic
+              ))
 
