@@ -7,17 +7,19 @@
 (def LATEST_RSS_FEED_URL "latest_rss_feed_url")
 
 (defn- create-container
-  [feed-lines]
-  (let [container
-        (indexed-container :properties [(container-property :pid "Title" :type String)
-                                        (container-property :pid "Link" :type String)
-                                        (container-property :pid "Description" :type String) ] ) ]
-    (doseq [feed-line feed-lines]
-      (set-item-property-values (add-container-item container)
-                                {"Title"       (:title feed-line)
-                                 "Link"        (:link feed-line)
-                                 "Description" (:description feed-line)} ))
-    container))
+  []
+  (indexed-container :properties [(container-property :pid "Title" :type String)
+                                  (container-property :pid "Link" :type String)
+                                  (container-property :pid "Description" :type String)]))
+
+(defn- fill-table
+  [table feed-lines]
+  (remove-all-items table)
+  (doseq [feed-line feed-lines]
+    (set-item-property-values (add-container-item table)
+                              {"Title"       (:title feed-line)
+                               "Link"        (:link feed-line)
+                               "Description" (:description feed-line)} )))
 
 (defn- create-item-click-listener
   [content-label link-label]
@@ -28,11 +30,14 @@
 
 (defn- create-feed-table
   [content-label link-label]
-  (table :width "100%", :height "50%" 
-         :selectable? true, :immediate? true, :striped? true
+  (table :width "100%",
+         :height "50%" 
+         :selectable? true, 
+         :immediate? true, 
+         :striped? true
          :column-header-mode :hidden
          :on-item-click (create-item-click-listener content-label link-label)
-         :container-datasource (create-container nil)
+         :container-datasource (create-container)
          :visible-columns ["Title"]))
 
  (defn- create-feed-content-label
@@ -51,8 +56,8 @@
 (defn- display-feed
   [url table]
   (set-cookie (cookie LATEST_RSS_FEED_URL url :path "/cljreindeerexample" :max-age 1000000))
-  (config! table :container-datasource (create-container (rss/fetch-feed url))
-                 :visible-columns ["Title"])) ; geht durch set-container-datasource verloren!
+  (fill-table table (rss/fetch-feed url))
+  ) 
 
 (defn- create-content
   []
@@ -62,7 +67,7 @@
         link-label    (link :target-name  "_blank")
         feed-table    (create-feed-table content-label link-label)
         fetch-button  (button :caption "Fetch"
-                              :on-click (fn [ev] 
+                              :on-click (fn [_] 
                                           (display-feed 
                                             (config url-field :value) 
                                             feed-table)))
@@ -94,6 +99,7 @@
   (config-ui! :title "RSS Reader built with Vaadin in Clojure"
               :content (create-content)
               ;; in push mode the cookies are not functioning - a known Vaadin defect... 
-              ;;:push-mode :automatic
+;              :push-mode :manual
+;              :push-transport :streaming
               ))
 
