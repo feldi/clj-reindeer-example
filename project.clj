@@ -5,10 +5,13 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.5.1"]
                  [clj-reindeer "0.3.1"]]
-  :plugins [[lein-servlet "0.3.0"]
+  :plugins [[lein-servlet "0.4.0"]
             [lein-localrepo "0.4.1"]]
-  :servlet {:deps [[lein-servlet/adapter-jetty9 "0.3.0"]]
+  :servlet {:deps [[lein-servlet/adapter-jetty9 "0.4.0"]
+                   ;;;[lein-servlet/adapter-tomcat7 "0.4.0"]
+                   ]
             :config {:engine :jetty
+                     ;;;:engine :tomcat
                      :host "localhost"
                      :port 3000}
             :webapps {:cljreindeerexample
